@@ -3,45 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeatherMap | SPA Application</title>
+    <title>WeatherMap | Advanced Web Tech Project</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- استدعاء خطوط وأيقونات لتحسين واجهة المستخدم (UI) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- فصل ملف الـ CSS الخاص بي عن ملفات المكتبات -->
     <link rel="stylesheet" href="style.css">
+    <!-- استدعاء مكتبة Leaflet للخرائط (خيار مسموح به في المتطلبات) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
-    <header class="app-header">
-        <h1>WeatherMap</h1>
-        <p>Discover real-time weather anywhere</p>
+    <!-- رأس الصفحة (Header): يحتوي على الشعار وأزرار التحكم -->
+    <header class="header">
+        <div class="logo">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <div>
+                <h1>Weather<span>Map</span></h1>
+                <p>Advanced Web Technologies</p>
+            </div>
+        </div>
     </header>
 
-    <main class="main-container">
-        
-        <section class="search-section">
-            <form id="search-form" class="search-form">
-                <input type="text" id="location-input" placeholder="Search for a city..." required autocomplete="off">
-                <button type="submit" id="search-btn">
-                    <span id="btn-text">Get Weather</span>
-                </button>
-            </form>
-        </section>
-
-        <section id="favorites-section" class="favorites-section hidden">
-            <span class="fav-label">Saved:</span>
-            <div id="favorites-list" class="favorites-list"></div>
-        </section>
-
-        <section class="map-wrapper">
-            <div id="loading-overlay" class="loading-overlay hidden">
-                <div class="spinner"></div>
-                <p>Fetching weather data...</p>
+    <main class="main-layout">
+        <!-- نموذج البحث: يعتمد على JS لمنع إعادة تحميل الصفحة (SPA Concept) -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="city-input" placeholder="Search for a city...">
             </div>
-            <div id="map"></div>
-        </section>
+            <button id="search-btn"><i class="fa-solid fa-paper-plane"></i> Get Weather</button>
+        </div>
 
+        <div class="content-grid">
+            
+            <div class="left-column">
+                <!-- قسم المدن المفضلة: يعتمد على LocalStorage (ميزة إضافية/Bonus) -->
+                <div class="saved-cities">
+                    <span><i class="fa-solid fa-star"></i> Saved:</span>
+                    <div id="saved-list" class="saved-list"></div>
+                </div>
+
+                <!-- كارت الطقس الحالي: سيتم تعبئته بالبيانات القادمة من OpenWeatherMap API -->
+                <div class="current-weather-card">
+                    <div class="card-header">
+                        <div>
+                            <h2 id="main-city">City</h2>
+                            <p id="main-country">Country</p>
+                        </div>
+                        <span id="main-date">Date</span>
+                    </div>
+                    <div class="weather-main">
+                        <!-- أضفت onerror لتفادي مشكلة حظر الصور من السيرفر (Fallback) -->
+                        <img id="main-icon" src="" alt="Icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1779/1779940.png'">
+                        <div class="temp-box">
+                            <h1 id="main-temp">--°</h1>
+                            <p id="main-desc">Description</p>
+                        </div>
+                    </div>
+                    <div class="weather-details">
+                        <div class="detail"><i class="fa-solid fa-droplet"></i> <span id="main-humidity">--%</span></div>
+                        <div class="detail"><i class="fa-solid fa-wind"></i> <span id="main-wind">-- km/h</span></div>
+                        <div class="detail"><i class="fa-solid fa-gauge"></i> <span id="main-pressure">-- hPa</span></div>
+                    </div>
+                </div>
+
+                <!-- توقعات 5 أيام: استخدمت Open-Meteo API هنا لأن OpenWeather يطلب اشتراك للـ Forecast -->
+                <div class="forecast-card">
+                    <div class="forecast-header">
+                        <i class="fa-solid fa-calendar-days"></i> 5-Day Forecast
+                    </div>
+                    <div class="forecast-grid" id="forecast-grid"></div>
+                </div>
+
+                <!-- أزرار الإجراءات: ميزات البونص (حفظ ومشاركة) -->
+                <div class="action-buttons">
+                    <button class="btn-save" id="save-btn"><i class="fa-regular fa-bookmark"></i> Save City</button>
+                    <button class="btn-share" id="share-btn"><i class="fa-solid fa-share-nodes"></i> Share Weather</button>
+                </div>
+            </div>
+
+            <!-- قسم الخريطة: تشغل مساحة كبيرة من الشاشة -->
+            <div class="right-column">
+                <div class="map-card">
+                    <div id="map"></div>
+                    
+                    <!-- نافذة منبثقة مخصصة (InfoWindow) تظهر فوق الخريطة -->
+                    <div class="map-info-window" id="map-info">
+                        <button class="close-info" id="close-info"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="info-content">
+                            <img id="info-icon" src="" alt="icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1779/1779940.png'">
+                            <div>
+                                <h3 id="info-city">City</h3>
+                                <h2 id="info-temp">--°C</h2>
+                                <p id="info-desc">Desc</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
 
+    <!-- استدعاء مكتبات JS في نهاية الـ body لتحسين الأداء -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
