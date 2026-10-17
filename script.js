@@ -19,7 +19,7 @@ const locationInput = document.getElementById('location-input');
 const loadingSpinner = document.getElementById('loading-spinner');
 
 // ضع مفتاح API الخاص بك هنا
-const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY'; 
+const API_KEY = '6ade53edbb8c618d6a73e788f06f818f'; 
 
 // دالة لجلب إحداثيات المدينة (خط العرض وخط الطول)
 async function getCoordinates(cityName) {
