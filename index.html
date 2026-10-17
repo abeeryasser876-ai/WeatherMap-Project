@@ -3,58 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Professional WeatherMap SPA">
-    <title>WeatherMap | Live Weather Tracker</title>
+    <title>WeatherMap | SPA Application</title>
     
-    <!-- استدعاء خط احترافي -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <!-- ملفات التنسيق -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
-    <div class="app-wrapper">
-        <!-- رأس التطبيق -->
-        <header class="app-header">
-            <h1>🌤️ WeatherMap</h1>
-            <p>Discover real-time weather anywhere</p>
-        </header>
+    <header class="app-header">
+        <h1>WeatherMap</h1>
+        <p>Discover real-time weather anywhere</p>
+    </header>
 
-        <!-- المحتوى الرئيسي -->
-        <main class="main-content">
-            
-            <!-- نموذج البحث -->
-            <section class="search-section">
-                <form id="search-form" class="search-form">
-                    <input type="text" id="location-input" placeholder="Search city (e.g., London, Cairo)..." required autocomplete="off">
-                    <button type="submit" id="search-btn">
-                        <span id="btn-text">Search</span>
-                    </button>
-                </form>
-            </section>
+    <main class="main-container">
+        
+        <section class="search-section">
+            <form id="search-form" class="search-form">
+                <input type="text" id="location-input" placeholder="Search for a city..." required autocomplete="off">
+                <button type="submit" id="search-btn">
+                    <span id="btn-text">Get Weather</span>
+                </button>
+            </form>
+        </section>
 
-            <!-- قسم المدن المفضلة (ميزة البونص) -->
-            <section id="favorites-section" class="favorites-section hidden">
-                <h3>⭐ Saved Cities</h3>
-                <div id="favorites-list" class="favorites-list"></div>
-            </section>
+        <section id="favorites-section" class="favorites-section hidden">
+            <span class="fav-label">Saved:</span>
+            <div id="favorites-list" class="favorites-list"></div>
+        </section>
 
-            <!-- حاوية الخريطة -->
-            <section class="map-container">
-                <!-- مؤشر التحميل المدمج -->
-                <div id="loading-overlay" class="loading-overlay hidden">
-                    <div class="spinner"></div>
-                    <p>Fetching data...</p>
-                </div>
-                <div id="map"></div>
-            </section>
+        <section class="map-wrapper">
+            <div id="loading-overlay" class="loading-overlay hidden">
+                <div class="spinner"></div>
+                <p>Fetching weather data...</p>
+            </div>
+            <div id="map"></div>
+        </section>
 
-        </main>
-    </div>
+    </main>
 
-    <!-- ملفات الجافاسكريبت -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>

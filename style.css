@@ -1,15 +1,12 @@
-/* =========================================
-   إعدادات المتغيرات العامة (ألوان احترافية)
-   ========================================= */
 :root {
-    --primary-color: #4A90E2;
-    --primary-dark: #2C3E50;
-    --bg-color: #F4F7F6;
-    --card-bg: #FFFFFF;
-    --text-main: #333333;
-    --text-muted: #7F8C8D;
-    --danger-color: #E74C3C;
-    --success-color: #2ECC71;
+    --primary: #2C3E50;
+    --accent: #3498DB;
+    --bg-color: #F0F2F5;
+    --white: #FFFFFF;
+    --text-dark: #333333;
+    --text-light: #7F8C8D;
+    --border-color: #DCE1E7;
+    --success: #27AE60;
 }
 
 * {
@@ -21,46 +18,43 @@
 
 body {
     background-color: var(--bg-color);
-    color: var(--text-main);
+    color: var(--text-dark);
     min-height: 100vh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
 }
 
-.app-wrapper {
-    width: 100%;
-    max-width: 1200px;
-    padding: 20px;
+.app-header {
+    text-align: center;
+    padding: 30px 20px;
+    background: var(--primary);
+    color: var(--white);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    margin-bottom: 25px;
+}
+
+.app-header h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-header p {
+    font-size: 0.9rem;
+    color: #BDC3C7;
+    margin-top: 5px;
+}
+
+.main-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* =========================================
-   رأس التطبيق
-   ========================================= */
-.app-header {
-    text-align: center;
-    padding: 20px;
-    background: var(--card-bg);
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-
-.app-header h1 {
-    color: var(--primary-dark);
-    font-size: 2rem;
-    margin-bottom: 5px;
-}
-
-.app-header p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-/* =========================================
-   قسم البحث
-   ========================================= */
 .search-section {
     display: flex;
     justify-content: center;
@@ -70,91 +64,91 @@ body {
     display: flex;
     width: 100%;
     max-width: 600px;
-    background: var(--card-bg);
-    border-radius: 50px;
-    padding: 5px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    background: var(--white);
+    border-radius: 30px;
+    padding: 6px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    transition: box-shadow 0.3s ease;
+}
+
+.search-form:focus-within {
+    box-shadow: 0 4px 20px rgba(52, 152, 219, 0.2);
 }
 
 .search-form input {
     flex: 1;
     border: none;
     outline: none;
-    padding: 15px 25px;
-    border-radius: 50px;
+    padding: 12px 20px;
+    border-radius: 30px;
     font-size: 1rem;
-    background: transparent;
 }
 
 .search-form button {
-    background: var(--primary-color);
-    color: white;
+    background: var(--accent);
+    color: var(--white);
     border: none;
     padding: 12px 30px;
-    border-radius: 50px;
+    border-radius: 30px;
     cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s, transform 0.2s;
+    font-weight: 500;
+    transition: background 0.3s ease;
 }
 
 .search-form button:hover {
-    background: #357ABD;
-    transform: scale(1.02);
+    background: #2980B9;
 }
 
-/* =========================================
-   قسم المدن المفضلة (البونص)
-   ========================================= */
 .favorites-section {
-    background: var(--card-bg);
-    padding: 15px 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
-    gap: 15px;
-    animation: fadeIn 0.5s ease;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: var(--white);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.favorites-section h3 {
-    font-size: 1rem;
-    color: var(--text-muted);
-    white-space: nowrap;
+.fav-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
 }
 
 .favorites-list {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .fav-btn {
-    background: #E8F0FE;
-    color: var(--primary-color);
-    border: 1px solid #D2E3FC;
-    padding: 8px 15px;
+    background: var(--bg-color);
+    color: var(--primary);
+    border: 1px solid var(--border-color);
+    padding: 6px 15px;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.2s;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
 }
 
 .fav-btn:hover {
-    background: var(--primary-color);
-    color: white;
+    background: var(--accent);
+    color: var(--white);
+    border-color: var(--accent);
 }
 
-/* =========================================
-   حاوية الخريطة ومؤشر التحميل
-   ========================================= */
-.map-container {
+.map-wrapper {
     position: relative;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    /* الارتفاع 70% من الشاشة كما هو مطلوب */
+    width: 100%;
     height: 70vh; 
+    border-radius: 15px;
+    border: 4px solid var(--primary);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    margin-bottom: 30px;
 }
 
 #map {
@@ -165,12 +159,9 @@ body {
 
 .loading-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(255, 255, 255, 0.85);
-    z-index: 999;
+    z-index: 1000;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -178,68 +169,54 @@ body {
 }
 
 .spinner {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid var(--primary-color);
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid var(--accent);
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     animation: spin 1s linear infinite;
     margin-bottom: 10px;
 }
 
-/* =========================================
-   تنسيق النافذة المنبثقة (InfoWindow)
-   ========================================= */
-.info-card {
+.info-window {
     text-align: center;
     padding: 5px;
 }
 
-.info-card h3 {
-    color: var(--primary-dark);
+.info-window h3 {
+    color: var(--primary);
     margin-bottom: 5px;
     text-transform: capitalize;
 }
 
-.info-card img {
-    width: 80px;
-    height: 80px;
+.info-window img {
+    width: 70px;
+    height: 70px;
 }
 
-.info-card p {
-    margin: 5px 0;
+.info-window p {
+    margin: 4px 0;
     font-size: 0.9rem;
-    color: var(--text-main);
 }
 
 .info-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 15px;
     justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
 }
 
 .action-btn {
     border: none;
     padding: 8px 15px;
-    border-radius: 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
     cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: opacity 0.2s;
 }
 
-.action-btn:hover { opacity: 0.8; }
+.btn-save { background: var(--bg-color); color: var(--primary); border: 1px solid var(--border-color); }
+.btn-share { background: var(--success); color: var(--white); }
 
-.btn-save { background: #E8F0FE; color: var(--primary-color); }
-.btn-share { background: var(--success-color); color: white; }
-
-/* =========================================
-   أدوات مساعدة وتأثيرات
-   ========================================= */
 .hidden { display: none !important; }
 
 @keyframes spin {
@@ -247,13 +224,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 @media (max-width: 600px) {
-    .search-form { flex-direction: column; padding: 10px; }
-    .search-form input, .search-form button { width: 100%; }
-    .favorites-section { flex-direction: column; align-items: flex-start; }
+    .search-form { flex-direction: column; border-radius: 15px; padding: 10px; }
+    .search-form button { width: 100%; border-radius: 10px; margin-top: 5px; }
 }
