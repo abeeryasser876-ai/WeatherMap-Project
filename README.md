@@ -12,3 +12,4 @@
 - CSS
 - JavaScript (Vanilla)
 - Leaflet.js
+Update 1
