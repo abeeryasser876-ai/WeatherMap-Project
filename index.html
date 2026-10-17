@@ -3,32 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WeatherMap | Advanced Web Tech Project</title>
+    <title>WeatherMap | Real-time Weather</title>
     
-    <!-- استدعاء خطوط وأيقونات لتحسين واجهة المستخدم (UI) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- فصل ملف الـ CSS الخاص بي عن ملفات المكتبات -->
     <link rel="stylesheet" href="style.css">
-    <!-- استدعاء مكتبة Leaflet للخرائط (خيار مسموح به في المتطلبات) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
-    <!-- رأس الصفحة (Header): يحتوي على الشعار وأزرار التحكم -->
+    <!-- رأس الصفحة -->
     <header class="header">
         <div class="logo">
             <i class="fa-solid fa-cloud-sun"></i>
             <div>
                 <h1>Weather<span>Map</span></h1>
-                <p>Advanced Web Technologies</p>
+                <p>Discover real-time weather anywhere</p>
             </div>
         </div>
     </header>
 
     <main class="main-layout">
-        <!-- نموذج البحث: يعتمد على JS لمنع إعادة تحميل الصفحة (SPA Concept) -->
+        <!-- شريط البحث -->
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -39,14 +36,15 @@
 
         <div class="content-grid">
             
+            <!-- العمود الأيسر: يحتوي على كروت الطقس -->
             <div class="left-column">
-                <!-- قسم المدن المفضلة: يعتمد على LocalStorage (ميزة إضافية/Bonus) -->
+                <!-- قسم المدن المحفوظة -->
                 <div class="saved-cities">
-                    <span><i class="fa-solid fa-star"></i> Saved:</span>
+                    <span><i class="fa-solid fa-star" style="color: #fbbf24;"></i> Saved:</span>
                     <div id="saved-list" class="saved-list"></div>
                 </div>
 
-                <!-- كارت الطقس الحالي: سيتم تعبئته بالبيانات القادمة من OpenWeatherMap API -->
+                <!-- كارت الطقس الحالي -->
                 <div class="current-weather-card">
                     <div class="card-header">
                         <div>
@@ -56,7 +54,7 @@
                         <span id="main-date">Date</span>
                     </div>
                     <div class="weather-main">
-                        <!-- أضفت onerror لتفادي مشكلة حظر الصور من السيرفر (Fallback) -->
+                        <!-- inerror: تفادي مشكلة حظر الصور بوضع أيقونة بديلة -->
                         <img id="main-icon" src="" alt="Icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1779/1779940.png'">
                         <div class="temp-box">
                             <h1 id="main-temp">--°</h1>
@@ -70,27 +68,29 @@
                     </div>
                 </div>
 
-                <!-- توقعات 5 أيام: استخدمت Open-Meteo API هنا لأن OpenWeather يطلب اشتراك للـ Forecast -->
+                <!-- كارت توقعات 5 أيام -->
                 <div class="forecast-card">
                     <div class="forecast-header">
                         <i class="fa-solid fa-calendar-days"></i> 5-Day Forecast
                     </div>
-                    <div class="forecast-grid" id="forecast-grid"></div>
+                    <div class="forecast-grid" id="forecast-grid">
+                        <!-- يتم تعبئتها بالجافاسكريبت -->
+                    </div>
                 </div>
 
-                <!-- أزرار الإجراءات: ميزات البونص (حفظ ومشاركة) -->
+                <!-- أزرار الحفظ والمشاركة -->
                 <div class="action-buttons">
                     <button class="btn-save" id="save-btn"><i class="fa-regular fa-bookmark"></i> Save City</button>
                     <button class="btn-share" id="share-btn"><i class="fa-solid fa-share-nodes"></i> Share Weather</button>
                 </div>
             </div>
 
-            <!-- قسم الخريطة: تشغل مساحة كبيرة من الشاشة -->
+            <!-- العمود الأيمن: الخريطة -->
             <div class="right-column">
                 <div class="map-card">
                     <div id="map"></div>
                     
-                    <!-- نافذة منبثقة مخصصة (InfoWindow) تظهر فوق الخريطة -->
+                    <!-- نافذة تفاصيل الطقس فوق الخريطة -->
                     <div class="map-info-window" id="map-info">
                         <button class="close-info" id="close-info"><i class="fa-solid fa-xmark"></i></button>
                         <div class="info-content">
@@ -108,7 +108,6 @@
         </div>
     </main>
 
-    <!-- استدعاء مكتبات JS في نهاية الـ body لتحسين الأداء -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
