@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- تحديد الترميز المستخدم لدعم اللغة العربية -->
+    <meta charset="UTF-8">
+    
+    <!-- إعدادات العرض المتجاوب مع مختلف الشاشات -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- عنوان الصفحة الذي يظهر في تبويب المتصفح -->
+    <title>WeatherMap - تطبيق الطقس التفاعلي</title>
+    
+    <!-- استدعاء خط Cairo من خدمة Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- استدعاء ملف التصميم الخاص بالتطبيق -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- استدعاء ملف التصميم الخاص بمكتبة الخرائط Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+    <!-- رأس الصفحة: يحتوي على عنوان التطبيق والوصف -->
+    <header class="app-header">
+        <h1>🌤️ WeatherMap</h1>
+        <p>أدخل اسم المدينة لاستعراض حالة الطقس</p>
+    </header>
+
+    <!-- الحاوية الرئيسية لمحتوى التطبيق -->
+    <main class="container">
+        
+        <!-- نموذج البحث: يحتوي على حقل الإدخال وزر البحث -->
+        <form id="search-form" class="search-form">
+            <input type="text" id="location-input" placeholder="مثال: الخرطوم أو القاهرة..." required>
+            <button type="submit" id="search-btn">بحث عن الطقس</button>
+        </form>
+
+        <!-- مؤشر التحميل: يظهر أثناء جلب البيانات من الخادم -->
+        <div id="loading-spinner" class="spinner hidden"></div>
+
+        <!-- حاوية الخريطة: سيتم عرض الخريطة التفاعلية بداخلها -->
+        <div id="map"></div>
+
+    </main>
+
+    <!-- استدعاء ملف الجافاسكريبت الخاص بمكتبة Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- استدعاء ملف الجافاسكريبت الخاص بمنطق التطبيق -->
+    <script src="script.js"></script>
+    
+</body>
+</html>

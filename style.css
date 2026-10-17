@@ -1,0 +1,187 @@
+/* =========================================================
+   إعدادات عامة لجميع عناصر الصفحة
+   ========================================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* تنسيق جسم الصفحة والخط العام */
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =========================================================
+   تنسيق رأس الصفحة (العنوان)
+   ========================================================= */
+.app-header {
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ظل خفيف للعنوان */
+    margin-bottom: 20px;
+}
+
+.app-header h1 {
+    font-size: 2.5rem; /* حجم خط أكبر من المعتاد */
+    color: #2c3e50;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* ظل للنص */
+}
+
+.app-header p {
+    color: #7f8c8d;
+    margin-top: 5px;
+}
+
+/* =========================================================
+   تنسيق الحاوية الرئيسية
+   ========================================================= */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* =========================================================
+   تنسيق نموذج البحث (حقل الإدخال والزر)
+   ========================================================= */
+.search-form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.search-form input {
+    flex: 1;
+    max-width: 400px;
+    padding: 12px 20px;
+    border: 2px solid #bdc3c7;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* حركة انتقالية */
+}
+
+.search-form input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* توهج عند التركيز */
+}
+
+.search-form button {
+    padding: 12px 25px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.search-form button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05); /* تكبير بسيط عند تمرير الماوس */
+}
+
+/* =========================================================
+   تنسيق حاوية الخريطة (ارتفاع 70% من الشاشة)
+   ========================================================= */
+#map {
+    height: 70vh; /* 70% من ارتفاع الشاشة */
+    width: 100%;
+    border: 4px solid #2c3e50; /* إطار بلون كحلي */
+    border-radius: 15px; /* زوايا دائرية */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* ظل */
+    z-index: 1;
+}
+
+/* =========================================================
+   تنسيق مؤشر التحميل (الدائرة الدوارة)
+   ========================================================= */
+.spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite; /* حركة الدوران */
+    margin: 0 auto;
+}
+
+/* كلاس لإخفاء العناصر (يُستخدم لإخفاء مؤشر التحميل) */
+.hidden {
+    display: none;
+}
+
+/* تعريف حركة الدوران */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   تنسيق النافذة المنبثقة (InfoWindow) على الخريطة
+   ========================================================= */
+.weather-info-window {
+    font-family: 'Cairo', sans-serif;
+    text-align: center;
+    padding: 10px;
+}
+
+.weather-info-window h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.weather-info-window img {
+    width: 60px;
+    height: 60px;
+}
+
+.weather-info-window p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+}
+
+.weather-info-window .share-btn {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+}
+
+.weather-info-window .share-btn:hover {
+    background-color: #0d8bd9;
+}
+
+/* =========================================================
+   التجاوب مع الشاشات الصغيرة (الهواتف)
+   ========================================================= */
+@media (max-width: 600px) {
+    .search-form {
+        flex-direction: column; /* ترتيب العناصر عمودياً */
+    }
+    .search-form input, .search-form button {
+        width: 100%;
+        max-width: none;
+    }
+}
