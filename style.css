@@ -1,187 +1,259 @@
-/* =========================================================
-   إعدادات عامة لجميع عناصر الصفحة
-   ========================================================= */
+/* =========================================
+   إعدادات المتغيرات العامة (ألوان احترافية)
+   ========================================= */
+:root {
+    --primary-color: #4A90E2;
+    --primary-dark: #2C3E50;
+    --bg-color: #F4F7F6;
+    --card-bg: #FFFFFF;
+    --text-main: #333333;
+    --text-muted: #7F8C8D;
+    --danger-color: #E74C3C;
+    --success-color: #2ECC71;
+}
+
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-/* تنسيق جسم الصفحة والخط العام */
 body {
-    font-family: 'Cairo', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.app-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    gap: 20px;
 }
 
-/* =========================================================
-   تنسيق رأس الصفحة (العنوان)
-   ========================================================= */
+/* =========================================
+   رأس التطبيق
+   ========================================= */
 .app-header {
     text-align: center;
     padding: 20px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ظل خفيف للعنوان */
-    margin-bottom: 20px;
+    background: var(--card-bg);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .app-header h1 {
-    font-size: 2.5rem; /* حجم خط أكبر من المعتاد */
-    color: #2c3e50;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* ظل للنص */
+    color: var(--primary-dark);
+    font-size: 2rem;
+    margin-bottom: 5px;
 }
 
 .app-header p {
-    color: #7f8c8d;
-    margin-top: 5px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
-/* =========================================================
-   تنسيق الحاوية الرئيسية
-   ========================================================= */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    flex: 1;
+/* =========================================
+   قسم البحث
+   ========================================= */
+.search-section {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    justify-content: center;
 }
 
-/* =========================================================
-   تنسيق نموذج البحث (حقل الإدخال والزر)
-   ========================================================= */
 .search-form {
     display: flex;
-    gap: 10px;
-    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    background: var(--card-bg);
+    border-radius: 50px;
+    padding: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .search-form input {
     flex: 1;
-    max-width: 400px;
-    padding: 12px 20px;
-    border: 2px solid #bdc3c7;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-family: 'Cairo', sans-serif;
+    border: none;
     outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* حركة انتقالية */
-}
-
-.search-form input:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); /* توهج عند التركيز */
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 1rem;
+    background: transparent;
 }
 
 .search-form button {
-    padding: 12px 25px;
-    background-color: #3498db;
+    background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-family: 'Cairo', sans-serif;
-    font-weight: bold;
+    padding: 12px 30px;
+    border-radius: 50px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 600;
+    transition: background 0.3s, transform 0.2s;
 }
 
 .search-form button:hover {
-    background-color: #2980b9;
-    transform: scale(1.05); /* تكبير بسيط عند تمرير الماوس */
+    background: #357ABD;
+    transform: scale(1.02);
 }
 
-/* =========================================================
-   تنسيق حاوية الخريطة (ارتفاع 70% من الشاشة)
-   ========================================================= */
+/* =========================================
+   قسم المدن المفضلة (البونص)
+   ========================================= */
+.favorites-section {
+    background: var(--card-bg);
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    animation: fadeIn 0.5s ease;
+}
+
+.favorites-section h3 {
+    font-size: 1rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.favorites-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.fav-btn {
+    background: #E8F0FE;
+    color: var(--primary-color);
+    border: 1px solid #D2E3FC;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.fav-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* =========================================
+   حاوية الخريطة ومؤشر التحميل
+   ========================================= */
+.map-container {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* الارتفاع 70% من الشاشة كما هو مطلوب */
+    height: 70vh; 
+}
+
 #map {
-    height: 70vh; /* 70% من ارتفاع الشاشة */
     width: 100%;
-    border: 4px solid #2c3e50; /* إطار بلون كحلي */
-    border-radius: 15px; /* زوايا دائرية */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* ظل */
+    height: 100%;
     z-index: 1;
 }
 
-/* =========================================================
-   تنسيق مؤشر التحميل (الدائرة الدوارة)
-   ========================================================= */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .spinner {
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
     border-radius: 50%;
     width: 50px;
     height: 50px;
-    animation: spin 1s linear infinite; /* حركة الدوران */
-    margin: 0 auto;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
 }
 
-/* كلاس لإخفاء العناصر (يُستخدم لإخفاء مؤشر التحميل) */
-.hidden {
-    display: none;
+/* =========================================
+   تنسيق النافذة المنبثقة (InfoWindow)
+   ========================================= */
+.info-card {
+    text-align: center;
+    padding: 5px;
 }
 
-/* تعريف حركة الدوران */
+.info-card h3 {
+    color: var(--primary-dark);
+    margin-bottom: 5px;
+    text-transform: capitalize;
+}
+
+.info-card img {
+    width: 80px;
+    height: 80px;
+}
+
+.info-card p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.info-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+.action-btn {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.2s;
+}
+
+.action-btn:hover { opacity: 0.8; }
+
+.btn-save { background: #E8F0FE; color: var(--primary-color); }
+.btn-share { background: var(--success-color); color: white; }
+
+/* =========================================
+   أدوات مساعدة وتأثيرات
+   ========================================= */
+.hidden { display: none !important; }
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-/* =========================================================
-   تنسيق النافذة المنبثقة (InfoWindow) على الخريطة
-   ========================================================= */
-.weather-info-window {
-    font-family: 'Cairo', sans-serif;
-    text-align: center;
-    padding: 10px;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.weather-info-window h3 {
-    margin-bottom: 10px;
-    color: #2c3e50;
-}
-
-.weather-info-window img {
-    width: 60px;
-    height: 60px;
-}
-
-.weather-info-window p {
-    margin: 5px 0;
-    font-size: 0.95rem;
-}
-
-.weather-info-window .share-btn {
-    margin-top: 10px;
-    padding: 8px 15px;
-    background-color: #1da1f2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
-}
-
-.weather-info-window .share-btn:hover {
-    background-color: #0d8bd9;
-}
-
-/* =========================================================
-   التجاوب مع الشاشات الصغيرة (الهواتف)
-   ========================================================= */
 @media (max-width: 600px) {
-    .search-form {
-        flex-direction: column; /* ترتيب العناصر عمودياً */
-    }
-    .search-form input, .search-form button {
-        width: 100%;
-        max-width: none;
-    }
+    .search-form { flex-direction: column; padding: 10px; }
+    .search-form input, .search-form button { width: 100%; }
+    .favorites-section { flex-direction: column; align-items: flex-start; }
 }
