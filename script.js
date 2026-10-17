@@ -1,42 +1,36 @@
-// إحداثيات الخرطوم كنقطة بداية للخريطة
+// =========================================================
+// 1. إعدادات الخريطة الأساسية
+// =========================================================
 const KHARTOUM_LAT = 15.5007;
 const KHARTOUM_LON = 32.5599;
 
-// إنشاء الخريطة وتحديد النقطة الابتدائية ومستوى التقريب
 const map = L.map('map').setView([KHARTOUM_LAT, KHARTOUM_LON], 6);
 
-// إضافة شكل الخريطة (OpenStreetMap)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// متغير لحفظ العلامة (Marker) الحالية
 let currentMarker = null;
 
-// جلب العناصر من صفحة HTML
+// الحصول على العناصر
 const form = document.getElementById('search-form');
 const locationInput = document.getElementById('location-input');
 const loadingSpinner = document.getElementById('loading-spinner');
 
-// ضع مفتاح API الخاص بك هنا
+// مفتاحك الخاص
 const API_KEY = '6ade53edbb8c618d6a73e788f06f818f'; 
 
-// دالة لجلب إحداثيات المدينة (خط العرض وخط الطول)
+// =========================================================
+// 2. دالة جلب الإحداثيات (Nominatim)
+// =========================================================
 async function getCoordinates(cityName) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName)}`;
     const response = await fetch(url);
     
-    // التحقق من نجاح الطلب
-    if (!response.ok) {
-        throw new Error('فشل الاتصال بخدمة تحديد المواقع. يرجى التأكد من اتصال الإنترنت.');
-    }
-
+    if (!response.ok) throw new Error('فشل الاتصال بخدمة تحديد المواقع.');
+    
     const data = await response.json();
-
-    // التحقق مما إذا كانت المدينة موجودة
-    if (data.length === 0) {
-        throw new Error('لم يتم العثور على المدينة. يرجى التأكد من كتابة الاسم بشكل صحيح.');
-    }
+    if (data.length === 0) throw new Error('لم يتم العثور على المدينة. تأكد من الاسم.');
 
     return {
         lat: parseFloat(data[0].lat),
@@ -44,112 +38,110 @@ async function getCoordinates(cityName) {
     };
 }
 
-// دالة لجلب بيانات الطقس باستخدام الإحداثيات
+// =========================================================
+// 3. دالة جلب الطقس (محاولة OpenWeather أولاً، ثم Open-Meteo)
+// =========================================================
 async function getWeatherData(lat, lon) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error('فشل جلب بيانات الطقس. يرجى التأكد من صحة مفتاح API.');
+    try {
+        // المحاولة الأولى: OpenWeatherMap (بيانات دقيقة وأيقونات حقيقية)
+        const owmUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+        const owmResponse = await fetch(owmUrl);
+        
+        if (owmResponse.ok) {
+            const owmData = await owmResponse.json();
+            return {
+                temp: owmData.main.temp,
+                humidity: owmData.main.humidity + '%',
+                clouds: owmData.clouds.all + '%',
+                windSpeed: owmData.wind.speed + ' م/ث',
+                description: owmData.weather[0].description,
+                iconUrl: `https://openweathermap.org/img/wn/${owmData.weather[0].icon}@2x.png`
+            };
+        }
+    } catch (e) {
+        console.warn("OpenWeatherMap فشل، جاري التحويل للموقع البديل...");
     }
 
-    return await response.json();
+    // المحاولة البديلة: Open-Meteo (لو OpenWeather محظور)
+    const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+    const meteoResponse = await fetch(meteoUrl);
+    
+    if (!meteoResponse.ok) throw new Error('فشل جلب بيانات الطقس من جميع المصادر.');
+    
+    const meteoData = await meteoResponse.json();
+    return {
+        temp: meteoData.current_weather.temperature,
+        humidity: 'غير متاح',
+        clouds: 'غير متاح',
+        windSpeed: meteoData.current_weather.windspeed + ' كم/س',
+        description: 'الطقس الحالي',
+        // أيقونة بديلة ثابتة شيك في حال استخدام الموقع البديل
+        iconUrl: 'https://cdn-icons-png.flaticon.com/512/1779/1779940.png' 
+    };
 }
 
-// دالة لبناء محتوى النافذة المنبثقة (InfoWindow)
+// =========================================================
+// 4. بناء النافذة المنبثقة
+// =========================================================
 function createInfoWindowContent(cityName, weather) {
-    const temp = weather.main.temp;
-    const humidity = weather.main.humidity;
-    const clouds = weather.clouds.all;
-    const windSpeed = weather.wind.speed;
-    const description = weather.weather[0].description;
-    const iconCode = weather.weather[0].icon;
-    
-    const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-    const shareText = `درجة الحرارة في ${cityName} هي ${temp}°C مع ${description}.`;
+    const shareText = `درجة الحرارة في ${cityName} هي ${weather.temp}°C مع ${weather.description}.`;
 
-    // إرجاع كود HTML لعرضه داخل النافذة
     return `
         <div class="weather-info-window">
             <h3>${cityName}</h3>
-            <img src="${iconUrl}" alt="${description}">
-            <p><strong>الحرارة:</strong> ${temp}°C</p>
-            <p><strong>الوصف:</strong> ${description}</p>
-            <p><strong>الرطوبة:</strong> ${humidity}%</p>
-            <p><strong>السحب:</strong> ${clouds}%</p>
-            <p><strong>الرياح:</strong> ${windSpeed} م/ث</p>
+            <img src="${weather.iconUrl}" alt="Weather Icon" class="weather-icon">
+            <p><strong>الحرارة:</strong> ${weather.temp}°C</p>
+            <p><strong>الوصف:</strong> ${weather.description}</p>
+            <p><strong>الرطوبة:</strong> ${weather.humidity}</p>
+            <p><strong>السحب:</strong> ${weather.clouds}</p>
+            <p><strong>الرياح:</strong> ${weather.windSpeed}</p>
             <button class="share-btn" id="share-btn" data-text="${shareText}">مشاركة الطقس</button>
         </div>
     `;
 }
 
-// الدالة الرئيسية التي تعمل عند الضغط على زر البحث
+// =========================================================
+// 5. الدالة الرئيسية للبحث
+// =========================================================
 async function handleSearch(event) {
-    // منع إعادة تحميل الصفحة
     event.preventDefault();
-
     const cityName = locationInput.value.trim();
     if (!cityName) return;
 
-    // إظهار مؤشر التحميل
     loadingSpinner.classList.remove('hidden');
 
     try {
-        // جلب الإحداثيات ثم جلب الطقس
         const coords = await getCoordinates(cityName);
         const weather = await getWeatherData(coords.lat, coords.lon);
 
-        // حذف العلامة السابقة إن وجدت
-        if (currentMarker) {
-            map.removeLayer(currentMarker);
-        }
+        if (currentMarker) map.removeLayer(currentMarker);
 
-        // تحريك الخريطة للموقع الجديد
-        map.flyTo([coords.lat, coords.lon], 12, {
-            animate: true,
-            duration: 1.5
-        });
+        map.flyTo([coords.lat, coords.lon], 12, { animate: true, duration: 1.5 });
 
-        // إضافة العلامة الجديدة
         currentMarker = L.marker([coords.lat, coords.lon]).addTo(map);
-
-        // فتح النافذة المنبثقة
         const popupContent = createInfoWindowContent(cityName, weather);
         currentMarker.bindPopup(popupContent).openPopup();
 
-        // تفعيل زر المشاركة
+        // تفعيل المشاركة
         setTimeout(() => {
             const shareBtn = document.getElementById('share-btn');
             if (shareBtn) {
                 shareBtn.addEventListener('click', async () => {
                     const text = shareBtn.getAttribute('data-text');
-                    
                     if (navigator.share) {
-                        try {
-                            await navigator.share({
-                                title: 'WeatherMap',
-                                text: text,
-                            });
-                        } catch (err) {
-                            console.log('تم إلغاء المشاركة.');
-                        }
+                        try { await navigator.share({ title: 'WeatherMap', text: text }); } catch (err) {}
                     } else {
-                        navigator.clipboard.writeText(text).then(() => {
-                            alert('تم نسخ نص الطقس إلى الحافظة!');
-                        });
+                        navigator.clipboard.writeText(text).then(() => alert('تم نسخ نص الطقس!'));
                     }
                 });
             }
         }, 100);
 
     } catch (error) {
-        // إظهار الخطأ للمستخدم
         alert(error.message);
     } finally {
-        // إخفاء مؤشر التحميل دائماً
         loadingSpinner.classList.add('hidden');
     }
 }
 
-// ربط حدث الإرسال بالدالة
 form.addEventListener('submit', handleSearch);
