@@ -1,39 +1,66 @@
 // ==========================================
-// Config & state
+// الإعدادات والمتغيرات العامة
 // ==========================================
-const API_KEY = '6ade53edbb8c618d6a73e788f06f818f';
-const DEFAULT_COORDS = [15.5007, 32.5599]; // Khartoum
-const FALLBACK_ICON = 'https://cdn-icons-png.flaticon.com/512/1779/1779940.png';
+const API_KEY = '6ade53edbb8c618d6a73e788f06f818f';   // مفتاح OpenWeatherMap
+const DEFAULT_COORDS = [15.5007, 32.5599];            // الخرطوم (نقطة البداية)
 
-let map;
-let currentMarker = null;
-let currentCityName = '';
-let currentShareText = '';
-let toastTimer;
+// أيقونة بديلة مدمجة في الكود (SVG) تظهر لو فشل تحميل أيقونة الطقس
+const FALLBACK_ICON = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
+    '<circle cx="24" cy="24" r="10" fill="#fbbf24"/>' +
+    '<path d="M18 50h30a10 10 0 0 0 0-20 14 14 0 0 0-27-3A12 12 0 0 0 18 50z" fill="#94a3b8"/>' +
+    '</svg>');
 
+let map;                       // كائن الخريطة
+let currentMarker = null;      // الماركر الحالي (نمسحو قبل ما نضيف جديد)
+let currentCityName = '';      // اسم المدينة الحالية (للحفظ والمشاركة)
+let currentShareText = '';     // نص المشاركة الجاهز
+let toastTimer;                // مؤقت رسالة الـ toast
+
+// اختصار للوصول للعناصر بالـ id
 const $ = (id) => document.getElementById(id);
 
 // ==========================================
-// 1. Map init (Phase 1)
+// 1. تهيئة الخريطة (Phase 1)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
+    // خريطة تبدأ على الخرطوم بزوم 6
     map = L.map('map').setView(DEFAULT_COORDS, 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    renderSavedCities();
+    // لما تُفتح نافذة الـ popup نربط زر Share اللي جواها
+    // (لأنو محتوى الـ popup بيتبني ديناميكياً)
+    map.on('popupopen', (e) => {
+        const btn = e.popup.getElement().querySelector('.popup-share');
+        if (btn) btn.addEventListener('click', shareWeather);
+    });
+
+    setIcon($('main-icon'), FALLBACK_ICON); // أيقونة مبدئية قبل أول بحث
+    renderSavedCities();                    // عرض المدن المحفوظة
 });
 
-// Fallback icon when an image fails to load (error events don't bubble, so use capture)
+// لو أي صورة فشل تحميلها نبدلها بالأيقونة البديلة
+// (حدث error ما بيطلع للأعلى، عشان كده نستخدم capture)
 document.addEventListener('error', (e) => {
     const img = e.target;
-    if (img.tagName === 'IMG' && img.src !== FALLBACK_ICON) img.src = FALLBACK_ICON;
+    if (img.tagName !== 'IMG' || img.dataset.fallback) return; // نمنع التكرار اللانهائي
+    img.dataset.fallback = '1';
+    img.src = FALLBACK_ICON;
 }, true);
 
+// دالة لتعيين مصدر صورة (وتصفير علامة الـ fallback)
+function setIcon(img, url) {
+    delete img.dataset.fallback;
+    img.src = url;
+}
+
 // ==========================================
-// 2. API calls (Phases 2 and 3)
+// 2. دوال جلب البيانات (Phases 2 و 3)
 // ==========================================
+
+// تحويل اسم المدينة إلى إحداثيات (Nominatim)
 async function fetchCoordinates(city) {
     const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=${encodeURIComponent(city)}`;
     const res = await fetch(url);
@@ -45,10 +72,12 @@ async function fetchCoordinates(city) {
     return {
         lat: parseFloat(data[0].lat),
         lon: parseFloat(data[0].lon),
-        displayName: data[0].display_name.split(',')[0]
+        // نفضل الاسم المباشر للمكان، وإلا أول جزء من العنوان الكامل
+        displayName: data[0].name || data[0].display_name.split(',')[0]
     };
 }
 
+// جلب الطقس الحالي من OpenWeatherMap
 async function fetchWeather(lat, lon) {
     const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`);
     if (res.status === 404) throw new Error('No weather data was found for this location.');
@@ -58,6 +87,7 @@ async function fetchWeather(lat, lon) {
     return res.json();
 }
 
+// جلب توقعات 5 أيام من Open-Meteo (مجاني)
 async function fetchForecast(lat, lon) {
     const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto`);
     if (!res.ok) throw new Error('Forecast data failed');
@@ -65,14 +95,17 @@ async function fetchForecast(lat, lon) {
 }
 
 // ==========================================
-// 3. UI helpers
+// 3. دوال مساعدة للواجهة
 // ==========================================
+
+// إظهار/إخفاء الـ spinner وتعطيل الأزرار أثناء التحميل
 function setLoading(isLoading) {
     $('loader').classList.toggle('hidden', !isLoading);
     $('search-btn').disabled = isLoading;
     $('locate-btn').disabled = isLoading;
 }
 
+// عرض كرت الخطأ
 function showError(message) {
     const card = $('error-card');
     card.textContent = message;
@@ -83,6 +116,7 @@ function hideError() {
     $('error-card').classList.add('hidden');
 }
 
+// رسالة قصيرة بتختفي بعد ثانيتين ونص
 function showToast(message) {
     const toast = $('toast');
     toast.textContent = message;
@@ -91,12 +125,14 @@ function showToast(message) {
     toastTimer = setTimeout(() => toast.classList.add('hidden'), 2500);
 }
 
+// حماية النصوص قبل إدخالها في HTML
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
+// تعبئة كرت الطقس الحالي
 function updateMainCard(cityName, weather) {
     const w = weather.weather[0];
     $('main-city').textContent = cityName;
@@ -106,11 +142,12 @@ function updateMainCard(cityName, weather) {
     $('main-desc').textContent = w.description;
     $('main-clouds').textContent = weather.clouds.all + '%';
     $('main-humidity').textContent = weather.main.humidity + '%';
-    $('main-wind').textContent = Math.round(weather.wind.speed * 3.6) + ' km/h'; // m/s -> km/h
+    $('main-wind').textContent = Math.round(weather.wind.speed * 3.6) + ' km/h'; // م/ث إلى كم/س
     $('main-pressure').textContent = weather.main.pressure + ' hPa';
-    $('main-icon').src = `https://openweathermap.org/img/wn/${w.icon}@4x.png`;
+    setIcon($('main-icon'), `https://openweathermap.org/img/wn/${w.icon}@4x.png`);
 }
 
+// اختيار أيقونة التوقعات حسب كود الطقس
 function forecastIcon(code) {
     if (code === 0) return 'fa-sun';
     if (code <= 2) return 'fa-cloud-sun';
@@ -123,10 +160,12 @@ function forecastIcon(code) {
     return 'fa-cloud';
 }
 
+// رسم كروت توقعات 5 أيام
 function renderForecast(forecast) {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let html = '';
     for (let i = 0; i < 5; i++) {
+        // نضيف الوقت عشان ما يتفسر التاريخ بتوقيت UTC ويتزحلق اليوم
         const date = new Date(forecast.daily.time[i] + 'T00:00:00');
         html += `
             <div class="forecast-item">
@@ -139,6 +178,7 @@ function renderForecast(forecast) {
     $('forecast-grid').innerHTML = html;
 }
 
+// بناء محتوى نافذة الـ InfoWindow (الـ popup)
 function buildPopupHtml(cityName, weather) {
     const w = weather.weather[0];
     return `
@@ -155,11 +195,13 @@ function buildPopupHtml(cityName, weather) {
 }
 
 // ==========================================
-// 4. Map marker + popup (Phases 4 and 5)
+// 4. الماركر والـ InfoWindow (Phases 4 و 5)
 // ==========================================
 function placeMarker(lat, lon, cityName, weather) {
+    // تحريك الخريطة بسلاسة للموقع الجديد
     map.flyTo([lat, lon], 10, { animate: true, duration: 2 });
 
+    // مسح الماركر القديم عشان ما تتزحم الخريطة
     if (currentMarker) map.removeLayer(currentMarker);
 
     const icon = L.divIcon({
@@ -170,23 +212,25 @@ function placeMarker(lat, lon, cityName, weather) {
         popupAnchor: [0, -38]
     });
 
-    currentMarker = L.marker([lat, lon], { icon })
+    // الماركر + نافذة المعلومات المربوطة بيهو
+    const marker = L.marker([lat, lon], { icon })
         .addTo(map)
-        .bindPopup(buildPopupHtml(cityName, weather), { autoPan: false })
-        .openPopup();
+        .bindPopup(buildPopupHtml(cityName, weather), { autoPanPadding: [20, 20] });
+    currentMarker = marker;
+
+    // نفتح الـ popup بعد ما تنتهي حركة الخريطة عشان تظهر كاملة
+    const openPopup = () => {
+        if (map.hasLayer(marker) && !marker.isPopupOpen()) marker.openPopup();
+    };
+    map.once('moveend', openPopup);
+    setTimeout(openPopup, 2500); // احتياط لو ما اشتغل moveend
 }
 
-// Popup content is created dynamically, so bind the Share button when it opens
-document.addEventListener('DOMContentLoaded', () => {
-    map.on('popupopen', (e) => {
-        const btn = e.popup.getElement().querySelector('.popup-share');
-        if (btn) btn.addEventListener('click', shareWeather);
-    });
-});
+// ==========================================
+// 5. المفضلة والمشاركة (بونص)
+// ==========================================
 
-// ==========================================
-// 5. Favorites + Share (bonus)
-// ==========================================
+// قراءة المدن المحفوظة من LocalStorage بشكل آمن
 function getSavedCities() {
     try {
         return JSON.parse(localStorage.getItem('savedCities')) || [];
@@ -195,6 +239,7 @@ function getSavedCities() {
     }
 }
 
+// عرض المدن المحفوظة كأزرار سريعة
 function renderSavedCities() {
     const list = $('saved-list');
     list.innerHTML = '';
@@ -202,6 +247,7 @@ function renderSavedCities() {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = city;
+        // الضغط على المدينة بيعمل بحث عنها مباشرة
         btn.addEventListener('click', () => {
             $('city-input').value = city;
             handleSearch();
@@ -210,6 +256,7 @@ function renderSavedCities() {
     });
 }
 
+// حفظ المدينة الحالية (بدون تكرار)
 function saveCurrentCity() {
     if (!currentCityName) {
         showToast('Search for a city first.');
@@ -226,6 +273,7 @@ function saveCurrentCity() {
     showToast(`${currentCityName} saved.`);
 }
 
+// مشاركة الطقس: Web Share API لو متاح، وإلا نسخ للحافظة
 async function shareWeather() {
     if (!currentShareText) {
         showToast('Search for a city first.');
@@ -239,15 +287,18 @@ async function shareWeather() {
             showToast('Weather details copied to clipboard.');
         }
     } catch (err) {
+        // لو المستخدم ألغى المشاركة ما نعرض خطأ
         if (err.name !== 'AbortError') showToast('Could not share. Try again.');
     }
 }
 
 // ==========================================
-// 6. Main flows
+// 6. العمليات الرئيسية
 // ==========================================
+
+// جلب الطقس والتوقعات وعرضهم على الصفحة والخريطة
 async function showLocation(lat, lon, cityName) {
-    // Weather is required; forecast is optional so its failure doesn't break the search
+    // الطقس ضروري، أما التوقعات فلو فشلت ما نوقف البحث كلو
     const [weatherResult, forecastResult] = await Promise.allSettled([
         fetchWeather(lat, lon),
         fetchForecast(lat, lon)
@@ -271,6 +322,7 @@ async function showLocation(lat, lon, cityName) {
     placeMarker(lat, lon, cityName, weather);
 }
 
+// البحث بالاسم: جيوكودنق ثم طقس (طلبات متسلسلة)
 async function handleSearch() {
     const city = $('city-input').value.trim();
     if (!city) {
@@ -286,10 +338,11 @@ async function handleSearch() {
     } catch (error) {
         showError(error.message || 'Something went wrong. Please try again.');
     } finally {
-        setLoading(false);
+        setLoading(false); // يشتغل سواء نجح الطلب أو فشل
     }
 }
 
+// الطقس حسب موقع المستخدم الحالي (Geolocation API)
 function handleLocate() {
     if (!navigator.geolocation) {
         showError('Your browser does not support geolocation.');
@@ -310,6 +363,7 @@ function handleLocate() {
             }
         },
         () => {
+            // المستخدم رفض الإذن أو حصل خطأ في تحديد الموقع
             setLoading(false);
             showError('Location access was denied. Allow it in your browser or search by city.');
         }
@@ -317,10 +371,10 @@ function handleLocate() {
 }
 
 // ==========================================
-// 7. Event listeners
+// 7. ربط الأحداث (Event Listeners)
 // ==========================================
 $('search-form').addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault();   // نمنع إعادة تحميل الصفحة
     handleSearch();
 });
 $('locate-btn').addEventListener('click', handleLocate);
