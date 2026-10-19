@@ -123,3 +123,52 @@ body {
 .saved-list button:active {
     transform: scale(0.95);
 }
+/* =========================================
+   التجاوب مع شاشات الموبايل والتابلت
+   ========================================= */
+@media (max-width: 900px) {
+    /* تحويل الصفحة لعمود واحد بدل عمودين */
+    .content-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* إظهار الخريطة أولاً */
+    .right-column {
+        order: -1;
+        height: 350px; /* تحديد ارتفاع مناسب للموبايل */
+    }
+
+    .map-card {
+        min-height: 100%;
+    }
+
+    /* ترتيب شريط البحث */
+    .search-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    #search-btn {
+        width: 100%;
+        padding: 15px;
+    }
+
+    /* تصغير حجم النص الكبير */
+    .weather-main h1 {
+        font-size: 3rem;
+    }
+
+    /* ترتيب توقعات 5 أيام */
+    .forecast-grid {
+        flex-wrap: wrap;
+    }
+
+    .forecast-item {
+        min-width: 30%;
+    }
+}
