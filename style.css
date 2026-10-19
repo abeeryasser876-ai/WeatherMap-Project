@@ -324,10 +324,6 @@ body {
 @media (max-width: 900px) {
     /* عمود واحد */
     .content-grid { display: flex; flex-direction: column; }
-
-    /* الخريطة تظهر أولاً في الموبايل. لو عايزها بعد كرت الطقس، امسح السطر ده */
-    .right-column { order: -1; }
-
     /* نموذج البحث عمودي */
     .search-container { flex-direction: column; gap: 10px; }
     .search-box { width: 100%; }
