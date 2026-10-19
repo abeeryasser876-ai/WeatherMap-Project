@@ -61,8 +61,7 @@ body {
     gap: 20px; 
     width: 100%;
 }
-.left-column { display: flex; flex-direction: column; gap: 20px; width: 100%; }
-
+.left-column { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
 /* المدن المحفوظة */
 .saved-cities { background: var(--bg-card); padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border-color); flex-wrap: wrap; }
 .saved-list { display: flex; gap: 10px; flex-wrap: wrap; }
