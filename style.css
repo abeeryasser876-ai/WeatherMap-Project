@@ -114,3 +114,12 @@ body {
     .forecast-grid { flex-wrap: wrap; }
     .forecast-item { min-width: 30%; }
 }
+/* تحسين تفاعل الأزرار عند تمرير الماوس */
+.search-box:focus-within {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+.saved-list button:active {
+    transform: scale(0.95);
+}
