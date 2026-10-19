@@ -4,47 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WeatherMap | Real-time Weather</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <!-- Leaflet CSS first so style.css can override it -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
-    <!-- رأس الصفحة -->
     <header class="header">
         <div class="logo">
             <i class="fa-solid fa-cloud-sun"></i>
             <div>
-                <h1>Weather<span>Map</span></h1>
+                <h1 class="page-title">Weather<span>Map</span></h1>
                 <p>Discover real-time weather anywhere</p>
             </div>
         </div>
     </header>
 
     <main class="main-layout">
-        <!-- شريط البحث -->
-        <div class="search-container">
+        <form id="search-form" class="search-container" autocomplete="off">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="city-input" placeholder="Search for a city...">
+                <input type="text" id="city-input" placeholder="Search for a city..." aria-label="City name">
             </div>
-            <button id="search-btn"><i class="fa-solid fa-paper-plane"></i> Get Weather</button>
-        </div>
+            <button type="submit" id="search-btn"><i class="fa-solid fa-paper-plane"></i> Get Weather</button>
+            <button type="button" id="locate-btn" aria-label="Use my location"><i class="fa-solid fa-location-crosshairs"></i> My Location</button>
+        </form>
+
+        <div id="loader" class="spinner hidden" role="status" aria-label="Loading"></div>
+        <div id="error-card" class="error-card hidden" role="alert"></div>
 
         <div class="content-grid">
-            
-            <!-- العمود الأيسر: يحتوي على كروت الطقس -->
+
             <div class="left-column">
-                <!-- قسم المدن المحفوظة -->
                 <div class="saved-cities">
-                    <span><i class="fa-solid fa-star" style="color: #fbbf24;"></i> Saved:</span>
+                    <span><i class="fa-solid fa-star star-icon"></i> Saved:</span>
                     <div id="saved-list" class="saved-list"></div>
                 </div>
 
-                <!-- كارت الطقس الحالي -->
                 <div class="current-weather-card">
                     <div class="card-header">
                         <div>
@@ -54,59 +53,43 @@
                         <span id="main-date">Date</span>
                     </div>
                     <div class="weather-main">
-                        <!-- inerror: تفادي مشكلة حظر الصور بوضع أيقونة بديلة -->
-                        <img id="main-icon" src="" alt="Icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1779/1779940.png'">
+                        <img id="main-icon" class="weather-icon" src="https://cdn-icons-png.flaticon.com/512/1779/1779940.png" alt="Weather icon">
                         <div class="temp-box">
-                            <h1 id="main-temp">--°</h1>
+                            <h2 id="main-temp" class="temp">--°</h2>
                             <p id="main-desc">Description</p>
                         </div>
                     </div>
                     <div class="weather-details">
+                        <div class="detail"><i class="fa-solid fa-cloud"></i> <span id="main-clouds">--%</span></div>
                         <div class="detail"><i class="fa-solid fa-droplet"></i> <span id="main-humidity">--%</span></div>
                         <div class="detail"><i class="fa-solid fa-wind"></i> <span id="main-wind">-- km/h</span></div>
                         <div class="detail"><i class="fa-solid fa-gauge"></i> <span id="main-pressure">-- hPa</span></div>
                     </div>
                 </div>
 
-                <!-- كارت توقعات 5 أيام -->
                 <div class="forecast-card">
                     <div class="forecast-header">
                         <i class="fa-solid fa-calendar-days"></i> 5-Day Forecast
                     </div>
-                    <div class="forecast-grid" id="forecast-grid">
-                        <!-- يتم تعبئتها بالجافاسكريبت -->
-                    </div>
+                    <div class="forecast-grid" id="forecast-grid"></div>
                 </div>
 
-                <!-- أزرار الحفظ والمشاركة -->
                 <div class="action-buttons">
-                    <button class="btn-save" id="save-btn"><i class="fa-regular fa-bookmark"></i> Save City</button>
-                    <button class="btn-share" id="share-btn"><i class="fa-solid fa-share-nodes"></i> Share Weather</button>
+                    <button type="button" class="btn-save" id="save-btn"><i class="fa-regular fa-bookmark"></i> Save City</button>
+                    <button type="button" class="btn-share" id="share-btn"><i class="fa-solid fa-share-nodes"></i> Share Weather</button>
                 </div>
             </div>
 
-            <!-- العمود الأيمن: الخريطة -->
             <div class="right-column">
                 <div class="map-card">
                     <div id="map"></div>
-                    
-                    <!-- نافذة تفاصيل الطقس فوق الخريطة -->
-                    <div class="map-info-window" id="map-info">
-                        <button class="close-info" id="close-info"><i class="fa-solid fa-xmark"></i></button>
-                        <div class="info-content">
-                            <img id="info-icon" src="" alt="icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1779/1779940.png'">
-                            <div>
-                                <h3 id="info-city">City</h3>
-                                <h2 id="info-temp">--°C</h2>
-                                <p id="info-desc">Desc</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
         </div>
     </main>
+
+    <div id="toast" class="toast hidden" role="status"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
