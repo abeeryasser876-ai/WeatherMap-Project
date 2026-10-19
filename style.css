@@ -1,3 +1,4 @@
+/* ===== المتغيرات: الألوان في مكان واحد لتسهيل التعديل ===== */
 :root {
     --bg-dark: #060b19;
     --bg-card: #0f172a;
@@ -6,7 +7,8 @@
     --text-muted: #94a3b8;
     --accent-blue: #3b82f6;
     --accent-purple: #8b5cf6;
-    --navy: #1f3a93;
+    --navy: #1f3a93;                 /* لون حد الخريطة (Navy) */
+    --btn-text: #06203a;             /* نص غامق للأزرار الفاتحة (وضوح أفضل) */
     --gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     --border-color: rgba(255, 255, 255, 0.1);
 }
@@ -18,6 +20,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* حجم الخط الأساسي 16px، والعنوان ضعفو (2rem) */
 html { font-size: 16px; }
 
 body {
@@ -26,12 +29,13 @@ body {
     font-size: 1rem;
     min-height: 100vh;
     padding: 20px;
-    overflow-x: hidden;
+    overflow-x: hidden;              /* منع السكرول العرضي */
 }
 
+/* كلاس عام لإخفاء العناصر (الـ JS بيضيفو ويشيلو) */
 .hidden { display: none !important; }
 
-/* ---------- Header ---------- */
+/* ===== الهيدر ===== */
 .header {
     display: flex;
     justify-content: space-between;
@@ -42,7 +46,8 @@ body {
 }
 .logo { display: flex; align-items: center; gap: 15px; }
 .logo i { font-size: 2.5rem; color: var(--accent-blue); }
-/* Page title: 2x body font size + subtle box shadow + Google font */
+
+/* عنوان الصفحة: ضعف حجم الخط + ظل خفيف + خط Poppins من Google Fonts */
 .page-title {
     font-size: 2rem;
     font-weight: 600;
@@ -55,13 +60,15 @@ body {
 .page-title span { color: var(--accent-purple); }
 .logo p { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
 
-/* ---------- Search form ---------- */
+/* ===== نموذج البحث ===== */
 .search-container {
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-bottom: 20px;
 }
+
+/* حقل الإدخال: حدود واضحة + زوايا دائرية + انتقال ناعم عند التركيز */
 .search-box {
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid var(--border-color);
@@ -80,7 +87,7 @@ body {
     box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
 }
 .search-box input {
-    -webkit-appearance: none;
+    -webkit-appearance: none;        /* إزالة ستايل المتصفح الافتراضي */
     appearance: none;
     background: transparent;
     border: none;
@@ -89,13 +96,14 @@ body {
     width: 100%;
     font-size: 1rem;
 }
+
+/* أزرار Get Weather و My Location */
 #search-btn,
 #locate-btn {
     -webkit-appearance: none;
     appearance: none;
     border-radius: 30px;
     padding: 0 28px;
-    color: white;
     font-weight: 600;
     font-size: 0.95rem;
     cursor: pointer;
@@ -104,15 +112,15 @@ body {
     gap: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
 }
-#search-btn { background: var(--gradient); border: 2px solid var(--accent-blue); }
-#locate-btn { background: transparent; border: 2px solid var(--border-color); }
+#search-btn { background: var(--gradient); border: 2px solid var(--accent-blue); color: var(--btn-text); }
+#locate-btn { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); }
 #search-btn:hover,
 #locate-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4); }
 #locate-btn:hover { border-color: var(--accent-blue); }
 #search-btn:disabled,
 #locate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
-/* ---------- Spinner, error card, toast ---------- */
+/* ===== الـ Spinner وكرت الخطأ والـ Toast ===== */
 .spinner {
     width: 40px;
     height: 40px;
@@ -149,18 +157,18 @@ body {
     z-index: 3000;
 }
 
-/* ---------- Layout ---------- */
+/* ===== تخطيط الصفحة (عمودين في الشاشات الكبيرة) ===== */
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
     gap: 20px;
     width: 100%;
-    align-items: start;
+    align-items: start;              /* يمنع تمدد العمود الأيسر */
 }
 .left-column { display: flex; flex-direction: column; gap: 20px; }
 .right-column { width: 100%; }
 
-/* ---------- Saved cities ---------- */
+/* ===== المدن المحفوظة ===== */
 .saved-cities {
     background: var(--bg-card);
     padding: 15px;
@@ -185,7 +193,7 @@ body {
 }
 .saved-list button:hover { background: var(--accent-blue); }
 
-/* ---------- Current weather card ---------- */
+/* ===== كرت الطقس الحالي ===== */
 .current-weather-card {
     background: var(--bg-card);
     border-radius: 20px;
@@ -212,7 +220,7 @@ body {
 .detail { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.9rem; }
 .detail i { color: var(--accent-blue); }
 
-/* ---------- Forecast ---------- */
+/* ===== توقعات 5 أيام ===== */
 .forecast-card {
     background: var(--bg-card);
     border-radius: 20px;
@@ -245,7 +253,7 @@ body {
 .forecast-item h4 { font-size: 1rem; margin: 5px 0; color: var(--text-main); }
 .forecast-item span { font-size: 0.8rem; color: var(--text-muted); }
 
-/* ---------- Action buttons ---------- */
+/* ===== أزرار الحفظ والمشاركة ===== */
 .action-buttons { display: flex; gap: 15px; width: 100%; }
 .action-buttons button {
     flex: 1;
@@ -262,10 +270,10 @@ body {
     transition: opacity 0.3s ease;
 }
 .btn-save { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color) !important; }
-.btn-share { background: var(--gradient); }
+.btn-share { background: var(--gradient); color: var(--btn-text) !important; }
 .action-buttons button:hover { opacity: 0.8; }
 
-/* ---------- Map: exactly 70% of viewport height, navy border, shadow ---------- */
+/* ===== حاوية الخريطة: 70% من ارتفاع الشاشة + حد Navy + ظل ===== */
 .map-card {
     height: 70vh;
     width: 100%;
@@ -277,12 +285,13 @@ body {
 }
 #map { width: 100%; height: 100%; z-index: 1; }
 
-/* Dark look for OpenStreetMap tiles */
+/* فلتر يخلي خريطة OpenStreetMap غامقة تناسب التصميم */
 .leaflet-layer { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
+/* شكل الماركر */
 .custom-marker i { color: var(--accent-purple); font-size: 30px; }
 
-/* ---------- Leaflet popup (InfoWindow) ---------- */
+/* ===== نافذة المعلومات (Leaflet popup) ===== */
 .leaflet-popup-content-wrapper {
     background: var(--bg-card);
     color: var(--text-main);
@@ -304,18 +313,22 @@ body {
     border: none;
     border-radius: 20px;
     background: var(--gradient);
-    color: #fff;
+    color: var(--btn-text);
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
 .popup-share:hover { opacity: 0.8; }
 
-/* ---------- Responsive ---------- */
+/* ===== التجاوب مع التابلت والموبايل (أقل من 900 بكسل) ===== */
 @media (max-width: 900px) {
+    /* عمود واحد */
     .content-grid { display: flex; flex-direction: column; }
+
+    /* الخريطة تظهر أولاً في الموبايل. لو عايزها بعد كرت الطقس، امسح السطر ده */
     .right-column { order: -1; }
 
+    /* نموذج البحث عمودي */
     .search-container { flex-direction: column; gap: 10px; }
     .search-box { width: 100%; }
     #search-btn,
