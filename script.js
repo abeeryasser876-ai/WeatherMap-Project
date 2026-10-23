@@ -1,7 +1,7 @@
 // ==========================================
 // الإعدادات والمتغيرات العامة
 // ==========================================
-const API_KEY = '6ade53edbb8c618d6a73e788f06f818f';   // مفتاح OpenWeatherMap
+const API_KEY = '08ddcd1f13d889dfa390b6f54236384a';   // مفتاح OpenWeatherMap
 const DEFAULT_COORDS = [15.5007, 32.5599];            // الخرطوم (نقطة البداية)
 
 // أيقونة بديلة مدمجة في الكود (SVG) تظهر لو فشل تحميل أيقونة الطقس
@@ -11,11 +11,11 @@ const FALLBACK_ICON = 'data:image/svg+xml;utf8,' + encodeURIComponent(
     '<path d="M18 50h30a10 10 0 0 0 0-20 14 14 0 0 0-27-3A12 12 0 0 0 18 50z" fill="#94a3b8"/>' +
     '</svg>');
 
-let map;                       // كائن الخريطة
-let currentMarker = null;      // الماركر الحالي (نمسحو قبل ما نضيف جديد)
-let currentCityName = '';      // اسم المدينة الحالية (للحفظ والمشاركة)
-let currentShareText = '';     // نص المشاركة الجاهز
-let toastTimer;                // مؤقت رسالة الـ toast
+let map;                       // 
+let currentMarker = null; 
+let currentCityName = '';      // 
+let currentShareText = '';    
+let toastTimer;                // 
 
 // اختصار للوصول للعناصر بالـ id
 const $ = (id) => document.getElementById(id);
@@ -29,9 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-
-    // لما تُفتح نافذة الـ popup نربط زر Share اللي جواها
-    // (لأنو محتوى الـ popup بيتبني ديناميكياً)
     map.on('popupopen', (e) => {
         const btn = e.popup.getElement().querySelector('.popup-share');
         if (btn) btn.addEventListener('click', shareWeather);
@@ -227,7 +224,7 @@ function placeMarker(lat, lon, cityName, weather) {
 }
 
 // ==========================================
-// 5. المفضلة والمشاركة (بونص)
+// 5.المفضلة والمشاركه ص)
 // ==========================================
 
 // قراءة المدن المحفوظة من LocalStorage بشكل آمن
@@ -322,7 +319,7 @@ async function showLocation(lat, lon, cityName) {
     placeMarker(lat, lon, cityName, weather);
 }
 
-// البحث بالاسم: جيوكودنق ثم طقس (طلبات متسلسلة)
+// البحث بالاسم:(طلبات متسلسلة)
 async function handleSearch() {
     const city = $('city-input').value.trim();
     if (!city) {
