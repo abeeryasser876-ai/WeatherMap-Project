@@ -68,10 +68,13 @@ No build step or server is needed.
 
 New OpenWeatherMap keys can take a few minutes to activate.
 
-### Security Note & Production Readiness
-As this is a pure client-side application built with Vanilla JavaScript, the OpenWeatherMap API key is inevitably exposed in the browser. To mitigate any risks, the key used is restricted to the free tier with no billing information attached, meaning no financial risks are involved. This is a standard acceptable practice for academic front-end projects. 
-The key is kept in a separate `config.js` file so it stays apart from the application logic, but because this is a client-side project it is still visible in the browser.
-For production environments, a Backend Proxy (e.g., Serverless function) would be implemented to secure the key and prevent unauthorized usage.
+## Security Note & Production Readiness
+
+As this is a pure client-side application built with Vanilla JavaScript, the OpenWeatherMap API key is inevitably exposed in the browser. To mitigate any risks, the key used is restricted to the free tier with no billing information attached, meaning no financial risks are involved. This is a common practice for academic front-end projects.
+
+The key is kept in a separate `config.js` file so it stays apart from the application logic. This file is committed on purpose so the GitHub Pages demo works, and because the project is client-side the key is still visible in the browser. `config.example.js` shows the expected format.
+
+For production environments, a backend proxy (e.g., a serverless function) would be implemented to secure the key and prevent unauthorized usage.
 
 
 ## Deployment
