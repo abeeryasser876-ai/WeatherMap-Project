@@ -38,8 +38,7 @@
             <button type="submit" id="search-btn"><i class="fa-solid fa-paper-plane"></i> Get Weather</button>
             <button type="button" id="locate-btn" aria-label="Use my location"><i class="fa-solid fa-location-crosshairs"></i> My Location</button>
         </form>
-
-        <!-- مؤشر التحميل (spinner) وكرت الأخطاء: مخفيين لين يحتاجهم الـ JS -->
+        <!-- مؤشر التحميل (spinner) وكرت الأخطاء يحتاجهم الـ JS -->
         <div id="loader" class="spinner hidden" role="status" aria-label="Loading"></div>
         <div id="error-card" class="error-card hidden" role="alert"></div>
 
@@ -106,6 +105,7 @@
     <div id="toast" class="toast hidden" role="status"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

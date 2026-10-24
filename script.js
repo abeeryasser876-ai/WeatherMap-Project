@@ -1,7 +1,7 @@
 // ==========================================
 // الإعدادات والمتغيرات العامة
 // ==========================================
-const API_KEY = 'fe8ece3b4de3304dc7993bb70d8ddb3c';   // مفتاح OpenWeatherMap
+const API_KEY = (window.WEATHERMAP_CONFIG || {}).openWeatherApiKey;
 const DEFAULT_COORDS = [15.5007, 32.5599];            // الخرطوم (نقطة البداية)
 
 // أيقونة بديلة مدمجة في الكود (SVG) تظهر لو فشل تحميل أيقونة الطقس
@@ -76,6 +76,7 @@ async function fetchCoordinates(city) {
 
 // جلب الطقس الحالي من OpenWeatherMap
 async function fetchWeather(lat, lon) {
+    if (!API_KEY) throw new Error('API key is missing. Create config.js from config.example.js.');
     const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`);
     if (res.status === 404) throw new Error('No weather data was found for this location.');
     if (res.status === 401) throw new Error('Invalid OpenWeatherMap API key.');
