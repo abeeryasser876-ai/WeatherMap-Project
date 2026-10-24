@@ -48,6 +48,8 @@ WeatherMap-Project/
 ├── index.html   # structure only (no inline JS or inline styles)
 ├── style.css    # all styling
 ├── script.js    # all behavior (event listeners via addEventListener)
+├── config.js          # API key and settings
+├── config.example.js  # template for config.js
 └── README.md
 ```
 
@@ -61,14 +63,14 @@ No build step or server is needed.
    cd WeatherMap-Project
    ```
 2. Get a free API key from [openweathermap.org](https://openweathermap.org/api) (sign up, then open "API keys").
-3. Open `script.js` and replace the value of `API_KEY` at the top with your key.
+3. Open `config.js` and replace the value of `openWeatherApiKey` with your own key (`config.example.js` shows the expected format).
 4. Open `index.html` in a browser (or use a local server such as the VS Code "Live Server" extension).
 
 New OpenWeatherMap keys can take a few minutes to activate.
 
 ### Security Note & Production Readiness
 As this is a pure client-side application built with Vanilla JavaScript, the OpenWeatherMap API key is inevitably exposed in the browser. To mitigate any risks, the key used is restricted to the free tier with no billing information attached, meaning no financial risks are involved. This is a standard acceptable practice for academic front-end projects. 
-
+The key is kept in a separate `config.js` file so it stays apart from the application logic, but because this is a client-side project it is still visible in the browser.
 For production environments, a Backend Proxy (e.g., Serverless function) would be implemented to secure the key and prevent unauthorized usage.
 
 
